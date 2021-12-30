@@ -1,0 +1,26 @@
+body{
+    font-family: "poppins";
+}
+.bg-dark_blue{
+    background-color: #000111!important;
+}
+.custom_input{
+    border:0;
+    border-bottom: 3px solid #000111!important;
+    padding: 5% 2%;
+    border-radius: 0;
+    transition: .5s;
+}
+.custom_input:focus{
+    border: 3px solid #3366cc;
+    transition: .5s;
+}
+
+.nav-link{
+    color: #fff !important;
+}
+
+.user_card{
+    height: 40vh;
+    overflow-y: scroll;
+}
