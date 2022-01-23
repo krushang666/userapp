@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 
 const UpdateForm = (props) => {
-  const data=props.data;
+  //console.log(props.data);
   const [userInput, setuserInput] = useState({
-    name: data.name,
-    email: data.email,
-    password: data.password,
+    name: props.data.name,
+    email: props.data.email,
+    password: props.data.password,
   });
-  
+  console.log(userInput);
   const NameHandler = (e) => {
     setuserInput((prevState) => {
       return {
@@ -77,7 +77,6 @@ const UpdateForm = (props) => {
               <div className="col-6 offset-3">
                 <input
                   type="text"
-                  
                   value={userInput.password}
                   onChange={PasswordHandler}
                   className="form-control custom_input"

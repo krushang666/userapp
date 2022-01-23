@@ -5,6 +5,7 @@ const Authcontext = React.createContext({
   name: "",
   onLogout: () => {},
   onLogin: () => {},
+  setName:()=>{}
 });
 
 export const AuthContextProvider = (props) => {
@@ -31,7 +32,9 @@ export const AuthContextProvider = (props) => {
       setstatus(true);
     }
   };
-
+  const ChangeName=(name)=>{
+    setName(name);
+  }
   const onLogoutHandler = () => {
     localStorage.removeItem("status");
     localStorage.removeItem("id");
@@ -46,6 +49,7 @@ export const AuthContextProvider = (props) => {
         name: Name,
         onLogin: onLoginHandler,
         onLogout: onLogoutHandler,
+        setName:ChangeName
       }}
     >
       {props.children}

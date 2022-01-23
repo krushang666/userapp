@@ -17,10 +17,11 @@ import Home from "./componants/Home/Home";
 
 function App() {
   //Comman Variables!!
-
+  const navigate = useNavigate();
   const ctx = useContext(Authcontext);
   const [userList, setuserList] = useState([]);
-  const [userData, setuserData] = useState([]);
+  const [userData, setuserData] = useState({});
+  const [updateRoute, setupdateRoute] = useState(false);
   const BaseUrl = "http://localhost:3300/User/";
 
   // Registration Handler!!
@@ -33,8 +34,8 @@ function App() {
       .then((success) => {
         console.log(success);
         alert(success.data);
-        
-        window.location.href="/";
+
+        navigate("/");
       });
   };
 
@@ -48,7 +49,9 @@ function App() {
       })
       .then((success) => {
         console.log(success);
+        ctx.setName(data.name);
         alert(success.data);
+        navigate("/")
       });
   };
 
@@ -85,61 +88,57 @@ function App() {
 
   const updateHandler = async () => {
     console.log(ctx.id);
-    await axios.get(`${BaseUrl}fetchUserFromId/${ctx.id}`).then((success) => {
-      setuserData(success.data);
-    });
+    const res = await axios.get(`${BaseUrl}fetchUserFromId/${ctx.id}`);
+    setuserData(res.data);
+    setupdateRoute(true);
   };
 
   // Delete Handler!!!
 
-  const DeleteHandler=async ()=>{
-    if(window.confirm("Are You Sure You Want To Delete Your Profile!!!!??")){
+  const DeleteHandler = async () => {
+    if (window.confirm("Are You Sure You Want To Delete Your Profile!!!!??")) {
       await axios.get(`${BaseUrl}delete/${ctx.id}`).then((success) => {
         alert(success.data);
         ctx.onLogout();
-        window.location.href="/";
+        navigate("/");
       });
     }
-  }
+  };
   return (
     <div>
-      <Router>
-        {ctx.isLoggedIn && <Navbar onUpdate={updateHandler} onDelete={DeleteHandler}></Navbar>}
-        <Routes>
-          {!ctx.isLoggedIn && (
-            <Route
-              path="/"
-              element={<LoginForm onLogin={LoginHandler} />}
-            ></Route>
-          )}
-          {ctx.isLoggedIn && (
-            <Route path="/" element={<Home userList={userList}></Home>}></Route>
-          )}
-
-          {ctx.isLoggedIn && (
-            <Route
-              path="/update"
-              element={
-                <UpdateForm
-                  data={userData}
-                  onSubmit={UpdateSubmitHanlder}
-                ></UpdateForm>
-              }
-            ></Route>
-          )}
-          {ctx.isLoggedIn && (
-            <Route
-              path="/delete"
-            ></Route>
-          )}
+      {ctx.isLoggedIn && (
+        <Navbar onUpdate={updateHandler} onDelete={DeleteHandler}></Navbar>
+      )}
+      <Routes>
+        {!ctx.isLoggedIn && (
           <Route
-            path="/reg"
-            element={
-              <RegistrationForm onSubmit={SubmitHandler}></RegistrationForm>
+            path="/"
+            element={<LoginForm onLogin={LoginHandler} />}
+          ></Route>
+        )}
+        {ctx.isLoggedIn && (
+          <Route path="/" element={<Home userList={userList}></Home>}></Route>
+        )}
+
+        {ctx.isLoggedIn && (
+          <Route
+            path="/update"
+            element={(updateRoute) &&
+              <UpdateForm
+                data={userData}
+                onSubmit={UpdateSubmitHanlder}
+              ></UpdateForm>
             }
           ></Route>
-        </Routes>
-      </Router>
+        )}
+        {ctx.isLoggedIn && <Route path="/delete"></Route>}
+        <Route
+          path="/reg"
+          element={
+            <RegistrationForm onSubmit={SubmitHandler}></RegistrationForm>
+          }
+        ></Route>
+      </Routes>
     </div>
   );
 }
